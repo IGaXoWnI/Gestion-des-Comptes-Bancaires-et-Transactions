@@ -40,7 +40,18 @@ public class Gestionnaire extends Person {
     }
     
     public void ajouterClient(Client client) {
-        System.out.println("STUB: Méthode ajouterClient() - À implémenter");
+        if (client == null) {
+            throw new IllegalArgumentException("Le client ne peut pas être null");
+        }
+        
+        boolean clientExiste = clients.stream()
+                                    .anyMatch(c -> c.getIdClient().equals(client.getIdClient()));
+        
+        if (clientExiste) {
+            throw new IllegalStateException("Un client avec cet ID existe déjà: " + client.getIdClient());
+        }
+        
+        this.clients.add(client);
     }
     
     public boolean supprimerClient(String idClient) {

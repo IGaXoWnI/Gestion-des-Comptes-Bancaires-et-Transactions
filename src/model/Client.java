@@ -48,8 +48,9 @@ public class Client extends Person {
     }
     
     public double calculerSoldeTotal() {
-        System.out.println("STUB: Méthode calculerSoldeTotal() - À implémenter");
-        return 0.0;
+        return comptes.stream()
+                     .mapToDouble(Compte::getSolde)
+                     .sum();
     }
     
     public int getNombreComptes() {

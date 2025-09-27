@@ -59,15 +59,54 @@ public class Compte {
     }
     
     public void deposer(double montant, String motif) {
-        System.out.println("STUB: Méthode deposer() - À implémenter");
+        if (montant <= 0) {
+            throw new IllegalArgumentException("Le montant doit être positif: " + montant);
+        }
+        
+        this.solde += montant;
+        
+        String transactionId = "T" + System.currentTimeMillis();
+        Transaction transaction = new Transaction(transactionId, montant, motif, this);
+        this.ajouterTransaction(transaction);
     }
     
     public void retirer(double montant, String motif) {
-        System.out.println("STUB: Méthode retirer() - À implémenter");
+        if (montant <= 0) {
+            throw new IllegalArgumentException("Le montant doit être positif: " + montant);
+        }
+        
+        if (this.solde < montant) {
+            throw new ArithmeticException("Solde insuffisant: " + this.solde + " < " + montant);
+        }
+        
+        this.solde -= montant;
+        
+        String transactionId = "T" + System.currentTimeMillis();
+        Transaction transaction = new Transaction(transactionId, montant, motif, this, true);
+        this.ajouterTransaction(transaction);
     }
     
     public void virer(double montant, Compte compteDestination, String motif) {
-        System.out.println("STUB: Méthode virer() - À implémenter");
+        if (montant <= 0) {
+            throw new IllegalArgumentException("Le montant doit être positif: " + montant);
+        }
+        
+        if (compteDestination == null) {
+            throw new IllegalStateException("Le compte de destination ne peut pas être null");
+        }
+        
+        if (this.solde < montant) {
+            throw new ArithmeticException("Solde insuffisant pour le virement: " + this.solde + " < " + montant);
+        }
+        
+        this.solde -= montant;
+        compteDestination.solde += montant;
+        
+        String transactionId = "T" + System.currentTimeMillis();
+        Transaction transaction = new Transaction(transactionId, montant, motif, this, compteDestination);
+        
+        this.ajouterTransaction(transaction);
+        compteDestination.ajouterTransaction(transaction);
     }
     
     public int getNombreTransactions() {
