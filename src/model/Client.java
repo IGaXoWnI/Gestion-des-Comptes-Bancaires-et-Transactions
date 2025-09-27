@@ -34,17 +34,14 @@ public class Client extends Person {
     }
     
     public boolean supprimerCompte(String idCompte) {
-        System.out.println("STUB: Méthode supprimerCompte() - À implémenter");
-        return false;
+        return comptes.removeIf(compte -> compte.getIdCompte().equals(idCompte));
     }
     
     public Compte rechercherCompte(String idCompte) {
-        for (Compte compte : comptes) {
-            if (compte.getIdCompte().equals(idCompte)) {
-                return compte;
-            }
-        }
-        return null;
+        return comptes.stream()
+                     .filter(compte -> compte.getIdCompte().equals(idCompte))
+                     .findFirst()
+                     .orElseThrow(() -> new java.util.NoSuchElementException("Compte introuvable: " + idCompte));
     }
     
     public double calculerSoldeTotal() {

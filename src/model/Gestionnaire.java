@@ -55,26 +55,21 @@ public class Gestionnaire extends Person {
     }
     
     public boolean supprimerClient(String idClient) {
-        System.out.println("STUB: Méthode supprimerClient() - À implémenter");
-        return false;
+        return clients.removeIf(client -> client.getIdClient().equals(idClient));
     }
     
     public Client rechercherClient(String idClient) {
-        for (Client client : clients) {
-            if (client.getIdClient().equals(idClient)) {
-                return client;
-            }
-        }
-        return null;
+        return clients.stream()
+                     .filter(client -> client.getIdClient().equals(idClient))
+                     .findFirst()
+                     .orElseThrow(() -> new java.util.NoSuchElementException("Client introuvable: " + idClient));
     }
     
     public Client rechercherClientParEmail(String email) {
-        for (Client client : clients) {
-            if (client.getEmail().equals(email)) {
-                return client;
-            }
-        }
-        return null;
+        return clients.stream()
+                     .filter(client -> client.getEmail().equals(email))
+                     .findFirst()
+                     .orElseThrow(() -> new java.util.NoSuchElementException("Client introuvable avec email: " + email));
     }
     
     public int getNombreClients() {
@@ -86,13 +81,15 @@ public class Gestionnaire extends Person {
     }
     
     public ArrayList<Client> getClientsTriesParNom() {
-        System.out.println("STUB: Méthode getClientsTriesParNom() - À implémenter");
-        return new ArrayList<>(clients);
+        return clients.stream()
+                     .sorted((c1, c2) -> c1.getNomComplet().compareToIgnoreCase(c2.getNomComplet()))
+                     .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
     }
     
     public double calculerTotalFondsGeres() {
-        System.out.println("STUB: Méthode calculerTotalFondsGeres() - À implémenter");
-        return 0.0;
+        return clients.stream()
+                     .mapToDouble(Client::calculerSoldeTotal)
+                     .sum();
     }
     
     @Override
